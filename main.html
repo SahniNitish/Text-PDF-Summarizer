@@ -1,0 +1,98 @@
+<html>
+<head>
+    <title>PDF/Text Summarizer</title>
+    <script src="https://unpkg.com/react/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"></link>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-100 font-roboto">
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useState } = React;
+
+        function App() {
+            const [isLoggedIn, setIsLoggedIn] = useState(false);
+            const [summary, setSummary] = useState("");
+            const [rating, setRating] = useState(0);
+            const [hoverRating, setHoverRating] = useState(0);
+
+            const handleLogin = () => {
+                setIsLoggedIn(true);
+            };
+
+            const handleLogout = () => {
+                setIsLoggedIn(false);
+            };
+
+            const handleSummarize = (e) => {
+                e.preventDefault();
+                const text = e.target.elements.text.value;
+                // Simulate summarization
+                setSummary(text.substring(0, 100) + "...");
+            };
+
+            const handleRating = (rate) => {
+                setRating(rate);
+            };
+
+            return (
+                <div className="container mx-auto p-4">
+                    <header className="flex justify-between items-center py-4">
+                        <h1 className="text-2xl font-bold">PDF/Text Summarizer</h1>
+                        {isLoggedIn ? (
+                            <button onClick={handleLogout} className="bg-red-500 text-white px-4 py-2 rounded">Logout</button>
+                        ) : (
+                            <button onClick={handleLogin} className="bg-blue-500 text-white px-4 py-2 rounded">Login</button>
+                        )}
+                    </header>
+
+                    {isLoggedIn ? (
+                        <div>
+                            <form onSubmit={handleSummarize} className="bg-white p-4 rounded shadow-md">
+                                <div className="mb-4">
+                                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="text">Enter Text or PDF Content:</label>
+                                    <textarea id="text" name="text" rows="5" className="w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none" required></textarea>
+                                </div>
+                                <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded">Summarize</button>
+                            </form>
+
+                            {summary && (
+                                <div className="mt-4 bg-white p-4 rounded shadow-md">
+                                    <h2 className="text-xl font-bold mb-2">Summary:</h2>
+                                    <p>{summary}</p>
+                                </div>
+                            )}
+
+                            {summary && (
+                                <div className="mt-4 bg-white p-4 rounded shadow-md">
+                                    <h2 className="text-xl font-bold mb-2">Rate the Summary:</h2>
+                                    <div className="flex">
+                                        {[1, 2, 3, 4, 5].map((star) => (
+                                            <i
+                                                key={star}
+                                                className={`fas fa-star cursor-pointer ${star <= (hoverRating || rating) ? 'text-yellow-500' : 'text-gray-300'}`}
+                                                onClick={() => handleRating(star)}
+                                                onMouseEnter={() => setHoverRating(star)}
+                                                onMouseLeave={() => setHoverRating(0)}
+                                            ></i>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    ) : (
+                        <div className="bg-white p-4 rounded shadow-md">
+                            <h2 className="text-xl font-bold mb-2">Please log in to use the summarizer.</h2>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
