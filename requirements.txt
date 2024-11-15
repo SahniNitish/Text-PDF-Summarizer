@@ -7,3 +7,6 @@ langchain-openai
 sentence-transformers
 faiss-cpu
 openai
+streamlit
+cohere
+pdfplumber
